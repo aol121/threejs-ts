@@ -1,15 +1,16 @@
 const path = require('path');
 const HtmlWebpalckPlugin = require('html-webpack-plugin');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
-  entry: './src/index.ts',
+  entry: './src/main.ts',
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
   },
   devtool: 'inlin-source-map',
   devServer: {
-    contentBase: './public',
+    contentBase: './dist',
     open: true,
     port: 9001,
   },
@@ -17,6 +18,9 @@ module.exports = {
     new HtmlWebpalckPlugin({
       template: './src/index.html',
     }),
+    new CopyWebpackPlugin([
+        { from: path.resolve(__dirname, './src/source'), to: path.resolve(__dirname, './dist/source') },
+    ]),
   ],
   module: {
     rules: [
@@ -40,7 +44,6 @@ module.exports = {
         test: /\.(png|jpg|gif)$/,
         use: [
           {
-            // loader: 'url-loader',
             options: {
               limit: 10000, //以字节为单位，小于该大小的图片编译成base64
               name: 'images/[name]-[hash].[ext]', //所有图片打包到images目录
